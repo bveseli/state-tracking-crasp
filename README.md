@@ -72,6 +72,8 @@ python src/training/state_prediction_ntp.py \
   --dataset_root data/
 ```
 
+> **Note:** `<language_name>` must match the `Name` column in `languages.csv` exactly. This same identifier is used as `--task` across all training scripts and corresponds to the subdirectory name created under `data/` during dataset generation.
+
 Sweep logs are written as `.txt` files to `results/hyperparam_search/{task}/`. Once the sweep is done, run `hparam_selection.py` to parse the logs and select the best architecture per language, saved as a JSON file used in the next step:
 
 ```bash
@@ -132,8 +134,7 @@ Key dependencies:
 | `graphviz` | 0.21 | DFA diagram generation |
 
 
-Compatibility note: 
-his script customises GPT-2's inputs, outputs, loss masks, and attention masks in ways that may break across transformers versions. If you upgrade the library, verify that everything still behaves as expected — and in particular that the new version's default GPT-2 does not silently overwrite any of these.
+> **Compatibility note:** This script customises GPT-2's inputs, outputs, loss masks, and attention masks in ways that may break across transformers versions. If you upgrade the library, verify that everything still behaves as expected — and in particular that the new version's default GPT-2 does not silently overwrite any of these.
 
 
 ## Folder Structure
