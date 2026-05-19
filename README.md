@@ -35,7 +35,7 @@ You need word datasets for each language. Again, two options:
 
 **Option A: Use the provided datasets**
 
-Pre-built datasets are included under `data/`. Skip to Step 3.
+Pre-built datasets are included under `datasets/`. Skip to Step 3.
 
 **Option B: Generate datasets from `languages.csv`**
 
@@ -45,11 +45,11 @@ cd scripts && sbatch create_words.sh
 # or directly:
 python src/data/create_words.py \
   --languages_csv languages.csv \
-  --output data/ \
+  --output datasets/ \
   --bins "(min,50),(51,100),(101,150),(151,200),(201,250),(251,300),(301,350),(351,400),(401,450),(451,500)"
 ```
 
-Each language gets a subdirectory under `data/` with:
+Each language gets a subdirectory under `datasets/` with:
 - `train_{min}-{max}.jsonl` — training split (first bin only)
 - `test_{min}-{max}.jsonl` — in-distribution test split
 - `test_{a}-{b}.jsonl` — OOD test splits (longer lengths)
@@ -69,7 +69,7 @@ Run a sweep over GPT-2 architectures (layers, heads, model dimension, learning r
 ```bash
 python src/training/state_prediction_ntp.py \
   --task <language_name> \
-  --dataset_root data/
+  --dataset_root datasets/
 ```
 
 > **Note:** `<language_name>` must match the `Name` column in `languages.csv` exactly. This same identifier is used as `--task` across all training scripts and corresponds to the subdirectory name created under `datasets/` during dataset generation.
@@ -95,7 +95,7 @@ Train the best architecture for each language across multiple random seeds to ge
 ```bash
 python src/training/run_multiple_seeds_ntp.py \
   --tasks <language_name> \
-  --dataset_root data/ \
+  --dataset_root datasets/ \
   --save_path results/
 ```
 
@@ -141,7 +141,7 @@ Key dependencies:
 
 ```
 state-tracking-crasp/
-├── data/                        # Generated word datasets (created at runtime)
+├── datasets/                        # Generated word datasets (created at runtime)
 │   ├── n10000-trainlen50/      # 10k training samples, train length range up to 50
 │   ├── n10000-trainlen200/     # 10k training samples, train length range up to 200
 │   ├── n100000-trainlen50/     # 100k training samples, train length range up to 50
