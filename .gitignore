@@ -1,7 +1,5 @@
 # Datasets and results
 results/
-datasets/
-data/
 
 # Evaluation
 src/evaluation/
