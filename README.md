@@ -2,46 +2,6 @@
 
 This repository corresponds to the paper "Algebraic Decomposition Theory for Transformer Length Generalization" by Yang et al. 2026.
 
-## Folder Structure
-
-```
-state-tracking-crasp/
-├── data/                        # Generated word datasets (created at runtime)
-│   ├── n10000-trainlen50/      # 10k training samples, train length range up to 50
-│   ├── n10000-trainlen200/     # 10k training samples, train length range up to 200
-│   ├── n100000-trainlen50/     # 100k training samples, train length range up to 50
-│   └── n100000-trainlen200/    # 100k training samples, train length range up to 200
-├── scripts/                     # SLURM batch scripts
-│   ├── generate_languages.sh
-│   ├── sample_languages.sh
-│   ├── create_words.sh
-│   ├── hparam_selection.sh
-│   └── decider.sh
-├── src/
-│   ├── regex_generation/        # Language generation and classification
-│   │   ├── generate_regexes.py  # Generate random regexes and classify them
-│   │   ├── classify_att.py      # Classify DFAs from .att files
-│   │   ├── decider.py           # Decide C-RASP membership for a regex
-│   │   ├── sample_languages.py  # Sample languages from classification results
-│   │   ├── dfa.py               # DFA utilities and diagram generation
-│   │   ├── crasp_reg.py         # C-RASP algebraic helpers
-│   │   └── results/             # Pre-computed classification results
-│   │       ├── r.txt            # Generated languages in R
-│   │       ├── crasp.txt        # Generated languages in C-RASP
-│   │       ├── r_infinity_not_crasp.txt        # Generated languages in R-infinity, not C-RASP
-│   │       ├── not_r_infinity.txt              # Generated languages not in R-infinity
-│   │       └── all_results.txt                 # All generated languages
-│   ├── data/
-│   │   └── create_words.py      # Sample words from regex and build datasets
-│   ├── training/
-│   │   ├── state_prediction_ntp.py      # Hyperparameter sweep
-│   │   └── run_multiple_seeds_ntp.py    # Multi-seed training
-│   └── utils/
-│       └── utils.py                    # Utilities, e.g. I/O functions
-│       └── hparam_selection.py         # Parses hyperparameter sweep logs to select the best architecture 
-└── requirements.txt      
-```
-
 ## Pipeline: Step-by-Step
 
 ### Step 1 — Languages
@@ -174,3 +134,44 @@ Key dependencies:
 
 Compatibility note: 
 his script customises GPT-2's inputs, outputs, loss masks, and attention masks in ways that may break across transformers versions. If you upgrade the library, verify that everything still behaves as expected — and in particular that the new version's default GPT-2 does not silently overwrite any of these.
+
+
+## Folder Structure
+
+```
+state-tracking-crasp/
+├── data/                        # Generated word datasets (created at runtime)
+│   ├── n10000-trainlen50/      # 10k training samples, train length range up to 50
+│   ├── n10000-trainlen200/     # 10k training samples, train length range up to 200
+│   ├── n100000-trainlen50/     # 100k training samples, train length range up to 50
+│   └── n100000-trainlen200/    # 100k training samples, train length range up to 200
+├── scripts/                     # SLURM batch scripts
+│   ├── generate_languages.sh
+│   ├── sample_languages.sh
+│   ├── create_words.sh
+│   ├── hparam_selection.sh
+│   └── decider.sh
+├── src/
+│   ├── regex_generation/        # Language generation and classification
+│   │   ├── generate_regexes.py  # Generate random regexes and classify them
+│   │   ├── classify_att.py      # Classify DFAs from .att files
+│   │   ├── decider.py           # Decide C-RASP membership for a regex
+│   │   ├── sample_languages.py  # Sample languages from classification results
+│   │   ├── dfa.py               # DFA utilities and diagram generation
+│   │   ├── crasp_reg.py         # C-RASP algebraic helpers
+│   │   └── results/             # Pre-computed classification results
+│   │       ├── r.txt            # Generated languages in R
+│   │       ├── crasp.txt        # Generated languages in C-RASP
+│   │       ├── r_infinity_not_crasp.txt        # Generated languages in R-infinity, not C-RASP
+│   │       ├── not_r_infinity.txt              # Generated languages not in R-infinity
+│   │       └── all_results.txt                 # All generated languages
+│   ├── data/
+│   │   └── create_words.py      # Sample words from regex and build datasets
+│   ├── training/
+│   │   ├── state_prediction_ntp.py      # Hyperparameter sweep
+│   │   └── run_multiple_seeds_ntp.py    # Multi-seed training
+│   └── utils/
+│       └── utils.py                    # Utilities, e.g. I/O functions
+│       └── hparam_selection.py         # Parses hyperparameter sweep logs to select the best architecture 
+└── requirements.txt      
+```
