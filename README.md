@@ -38,8 +38,7 @@ state-tracking-crasp/
 │   │   └── run_multiple_seeds_ntp.py    # Multi-seed training
 │   └── utils/
 │       └── utils.py                    # Utilities, e.g. I/O functions
-│       └── hparam_selection.py         # Parses hyperparameter sweep logs to select the best architecture per language
-├── languages.csv                # Selected (generated) languages used for experiments
+│       └── hparam_selection.py         # Parses hyperparameter sweep logs to select the best architecture 
 └── requirements.txt      
 ```
 
