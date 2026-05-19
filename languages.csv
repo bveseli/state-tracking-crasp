@@ -1,4 +1,4 @@
-Name;Formal Language;Regex;Comment;C-RASP;R_infinity
+Name;Formal Language;Regex;R;C-RASP;R_infinity
 crasp_192;(ca)*(a)*bb;(ca)*(a)*bb;;True;True
 crasp_265;bab(ba)*;bab(ba)*;;True;True
 crasp_129;(ac)*c+ba+a;(ac)*c|ba|a;;True;True
