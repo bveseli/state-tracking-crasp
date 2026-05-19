@@ -1,0 +1,10 @@
+automata==0.1.4
+graphviz==0.21
+matplotlib==3.8.3
+networkx==3.1
+numpy==2.4.6
+pandas==3.0.3
+pysemigroup==0.3b3
+sympy==1.12
+torch==2.2.2
+transformers==4.47.0
