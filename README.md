@@ -123,15 +123,15 @@ pip install -r requirements.txt
 
 Key dependencies:
 
-| Package | Version | Purpose |
+| Package | Version |
 |---|---|---|
-| `automata` | 0.1.4 | NFA/DFA construction from regex |
-| `pysemigroup` | 0.3b3 | Syntactic monoid computation |
-| `torch` | 2.2.2 | Model training |
-| `transformers` | 4.47.0 | GPT-2 architecture and Trainer |
-| `networkx` | 3.1 | Graph algorithms for C-RASP decision |
-| `sympy` | 1.12 | Nullspace computation for balanced morphisms |
-| `graphviz` | 0.21 | DFA diagram generation |
+| `automata` | 0.1.4 | 
+| `pysemigroup` | 0.3b3 | 
+| `torch` | 2.2.2 | 
+| `transformers` | 4.47.0 | 
+| `networkx` | 3.1 | 
+| `sympy` | 1.12 | 
+| `graphviz` | 0.21 |
 
 
 > **Compatibility note:** This script customises GPT-2's inputs, outputs, loss masks, and attention masks in ways that may break across transformers versions. If you upgrade the library, verify that everything still behaves as expected — and in particular that the new version's default GPT-2 does not silently overwrite any of these.
