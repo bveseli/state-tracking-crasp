@@ -74,7 +74,7 @@ python src/training/state_prediction_ntp.py \
 
 > **Note:** `<language_name>` must match the `Name` column in `languages.csv` exactly. This same identifier is used as `--task` across all training scripts and corresponds to the subdirectory name created under `datasets/` during dataset generation.
 
-Sweep logs are written as `.txt` files to `results/hyperparam_search/{task}/`. Once the sweep is done, run `hparam_selection.py` to parse the logs and select the best architecture per language, saved as a JSON file used in the next step:
+Sweep logs are written as `.txt` files to `results/hyperparam_search/{language_name}/`. Once the sweep is done, run `hparam_selection.py` to parse the logs and select the best architecture per language, saved as a JSON file used in the next step:
 
 ```bash
 cd scripts && sbatch hparam_selection.sh
