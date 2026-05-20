@@ -137,7 +137,7 @@ pip install -r requirements.txt
 Key dependencies:
 
 | Package | Version |
-|---|---|---|
+|---|---|
 | `automata` | 0.1.4 | 
 | `pysemigroup` | 0.3b3 | 
 | `torch` | 2.2.2 | 
