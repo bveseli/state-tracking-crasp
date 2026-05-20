@@ -61,7 +61,7 @@ Bins are passed via `--bins` as comma-separated ranges, e.g. `(min,50),(51,100),
 
 With defaults (`--train_size 10000`, `--test_size 1000`): the first bin yields roughly 8,000 training and 2,000 in-distribution test examples (after the 80/20 split; upsampled if fewer unique words are available). Each additional bin contributes up to 1,000 test examples at longer lengths.
 
-Output layout: `datasets/n{train_size}-trainlen{upper_bound_of_first_bin}/{language_name}/` (e.g. `datasets/n10000-trainlen50/<language_name>/`).
+Output layout: `datasets/n{train_size}-trainlen{upper_bound_of_first_bin}/{language_name}/` (e.g. `datasets/n10000-trainlen50/{language_name}/`).
 
 Each language subdirectory contains:
 - `train_{min}-{max}.jsonl` — training data (first bin only)
