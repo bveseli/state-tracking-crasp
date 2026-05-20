@@ -1,6 +1,19 @@
 # Algebraic Decomposition Theory for Transformer Length Generalization
 
-This repository corresponds to the paper "Algebraic Decomposition Theory for Transformer Length Generalization" by Yang et al. 2026.
+This repository corresponds to the paper "Algebraic Decomposition Theory for Transformer Length Generalization" [link incoming].
+
+### What this code does
+
+Each formal language is defined by a regular expression and realized as a DFA. The learning task is **state prediction**: the model reads a word one symbol at a time; after each symbol, the automaton moves to a new state, and the model must predict that state. In other words: given a word, the model is trained to predict the corresponding DFA state sequence. 
+
+The codebase supports the full experimental pipeline:
+
+1. **Generate languages** — sample random regular expressions and classify them (R, C-RASP, R∞), or use the provided `languages.csv`.
+2. **Build datasets** — sample accepted words at chosen length bins and record DFA state traces for each language.
+3. **Hyperparameter search** — sweep over model architectures and select the best model per language.
+4. **Multi-seed training** — train the chosen architecture with multiple random initializations for robust evaluation.
+
+Pre-built languages and datasets are included so you can start from any step. Details below.
 
 ## Pipeline: Step-by-Step
 
@@ -101,7 +114,7 @@ Add `--nope` if the sweep was run with NoPE (No Positional Encoding), which will
 
 ---
 
-### Step 4 — Multi-Seed Evaluation
+### Step 4 — Multi-Seed Run
 
 Train the best architecture for each language across multiple random seeds to get robust generalisation results:
 
