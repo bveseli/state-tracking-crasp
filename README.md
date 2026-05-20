@@ -39,7 +39,8 @@ Pre-built datasets are included under `datasets/`. Skip to Step 3.
 
 **Option B: Generate datasets from `languages.csv`**
 
-For each language, this samples words of varying lengths, computes DFA state traces, and splits them into train/test bins by length:
+For each language, `create_words.py` samples accepted words at different lengths, records the DFA state trace for each word, and writes JSONL files grouped by length bin.
+
 ```bash
 cd scripts && sbatch create_words.sh
 # or directly:
@@ -49,11 +50,33 @@ python src/data/create_words.py \
   --bins "(min,50),(51,100),(101,150),(151,200),(201,250),(251,300),(301,350),(351,400),(401,450),(451,500)"
 ```
 
-Each language gets a subdirectory under `datasets/` with:
-- `train_{min}-{max}.jsonl` — training split (first bin only)
-- `test_{min}-{max}.jsonl` — in-distribution test split
-- `test_{a}-{b}.jsonl` — OOD test splits (longer lengths)
-- `meta_data.json` — DFA states, alphabet, and bin configuration. The *Tokenizer* per language will be created based on this file.
+#### Length bins and sampling defaults
+
+Bins are passed via `--bins` as comma-separated ranges, e.g. `(min,50),(51,100),...`. The **first bin** sets the **train length range**; every **later bin** is a **test-only** length range for out-of-distribution (OOD) length generalization evaluation.
+
+| Bin | Role | Default sampling | Output files |
+|-----|------|------------------|--------------|
+| First (e.g. `(min,50)`) | Train length range | Up to `--train_size` words (default **10,000**), then **80/20** train / in-distribution test | `train_{min}-{max}.jsonl`, `test_{min}-{max}.jsonl` |
+| Remaining bins | OOD test length ranges | Up to `--test_size` words per bin (default **1,000**) | `test_{min}-{max}.jsonl` only |
+
+With defaults (`--train_size 10000`, `--test_size 1000`): the first bin yields roughly 8,000 training and 2,000 in-distribution test examples (after the 80/20 split; upsampled if fewer unique words are available). Each additional bin contributes up to 1,000 test examples at longer lengths.
+
+Override sizes if needed:
+```bash
+python src/data/create_words.py \
+  --languages_csv languages.csv \
+  --output datasets/ \
+  --train_size 100000 \
+  --test_size 1000 \
+  --bins "(min,50),(51,100),(101,150)"
+```
+
+Output layout: `datasets/n{train_size}-trainlen{upper_bound_of_first_bin}/{language_name}/` (e.g. `datasets/n10000-trainlen50/<language_name>/`).
+
+Each language subdirectory contains:
+- `train_{min}-{max}.jsonl` — training data (first bin only)
+- `test_{min}-{max}.jsonl` — in-distribution test (first bin) or OOD test (later bins)
+- `meta_data.json` — DFA states, alphabet, and bin configuration (used to build the per-language tokenizer)
 
 Each record has the form:
 ```json
@@ -172,7 +195,8 @@ state-tracking-crasp/
 │   │   ├── state_prediction_ntp.py      # Hyperparameter sweep
 │   │   └── run_multiple_seeds_ntp.py    # Multi-seed training
 │   └── utils/
-│       └── utils.py                    # Utilities, e.g. I/O functions
-│       └── hparam_selection.py         # Parses hyperparameter sweep logs to select the best architecture 
-└── requirements.txt      
+│       ├── utils.py                    # Shared I/O utilities
+│       └── hparam_selection.py         # Select best architecture from sweep logs
+├── languages.csv                       # Language list for experiments (optional if generating your own)
+└── requirements.txt
 ```
