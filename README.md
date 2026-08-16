@@ -1,6 +1,6 @@
 # Algebraic Decomposition Theory for Transformer Length Generalization
 
-This repository corresponds to the paper "Algebraic Decomposition Theory for Transformer Length Generalization" [link incoming].
+This repository corresponds to the paper ["Algebraic Decomposition Theory for Transformer Length Generalization"](https://arxiv.org/abs/2608.13433).
 
 ### What this code does
 
@@ -8,7 +8,7 @@ Each formal language is defined by a regular expression and realized as a DFA. T
 
 The codebase supports the full experimental pipeline:
 
-1. **Generate languages** — sample random regular expressions and classify them (R, C-RASP, R∞), or use the provided `languages.csv`.
+1. **Generate languages** — sample random regular expressions and classify them (R, C-RASP, R∞), or use the provided `main_language_suite.csv`/`secondary_language_suite.csv`.
 2. **Build datasets** — sample accepted words at chosen length bins and record DFA state traces for each language.
 3. **Hyperparameter search** — sweep over model architectures and select the best model per language.
 4. **Multi-seed training** — train the chosen architecture with multiple random initializations for robust evaluation.
@@ -19,7 +19,7 @@ Pre-built languages and datasets are included so you can start from any step. De
 
 ### Step 1 — Languages
 
-You need a `languages.csv` file listing the regular languages to experiment on. You have two options:
+You need some csv-file listing the regular languages to experiment on. You have two options:
 
 **Option A: Use the provided languages** (recommended to reproduce paper results)
 
@@ -121,7 +121,7 @@ Train the best architecture for each language across multiple random seeds to ge
 ```bash
 python src/training/run_multiple_seeds_ntp.py \
   --tasks <language_name> \
-  --dataset_root datasets/n10000-trainlen50 \
+  --dataset_root datasets/main_train50/10K \
   --hparams_path best_hparams.json \
   --save_path results/main_language_suite/multi-seed-run
 ```
