@@ -1,5 +1,5 @@
 # Datasets and results
-results/
+datasets/
 
 # Evaluation
 src/evaluation/
@@ -31,4 +31,4 @@ logs/
 
 # old files
 languages.csv
-datasets/
+

@@ -1,0 +1,1 @@
+4l1h256d		 >> early stop 216.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.682		eval_len301-400_acc: 0.122		eval_len401-500_acc: 0.0 		lr: 0.0001

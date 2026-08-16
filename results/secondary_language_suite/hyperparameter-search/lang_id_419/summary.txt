@@ -1,0 +1,6 @@
+2l1h64d		 >> early stop 168.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.847		eval_len301-400_acc: 0.318		eval_len401-500_acc: 0.017 		lr: 0.0001
+2l2h64d		 >> early stop 240.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.956		eval_len301-400_acc: 0.865		eval_len401-500_acc: 0.551 		lr: 0.001
+2l2h64d		 >> early stop 168.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.967		eval_len301-400_acc: 0.658		eval_len401-500_acc: 0.25 		lr: 0.0001
+2l2h256d		 >> early stop 168.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 1.0		eval_len301-400_acc: 0.428		eval_len401-500_acc: 0.188 		lr: 0.001
+2l2h256d		 >> early stop 72.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.865		eval_len301-400_acc: 0.515		eval_len401-500_acc: 0.147 		lr: 0.0001
+2l4h64d		 >> early stop 96.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 1.0		eval_len301-400_acc: 1.0		eval_len401-500_acc: 1.0 		lr: 0.001

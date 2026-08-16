@@ -1,0 +1,4 @@
+4l1h16d		 >> early stop 192.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.744		eval_len301-400_acc: 0.03		eval_len401-500_acc: 0.0 		lr: 0.001
+4l2h16d		 >> early stop 192.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.706		eval_len301-400_acc: 0.011		eval_len401-500_acc: 0.0 		lr: 0.001
+4l4h16d		 >> early stop 168.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.608		eval_len301-400_acc: 0.001		eval_len401-500_acc: 0.0 		lr: 0.001
+4l4h64d		 >> early stop 240.0		 eval_len0-200_acc: 1.0		eval_len201-300_acc: 0.402		eval_len301-400_acc: 0.0		eval_len401-500_acc: 0.0 		lr: 0.0001
