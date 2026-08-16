@@ -31,7 +31,7 @@ First, generate and classify 2000 random regular expressions over `{a, b, c}`:
 ```bash
 cd scripts && sbatch generate_languages.sh
 ```
-This classifies each regex into **R**, **C-RASP**, **R∞** and $R \circ G$ and saves the results to `src/regex_generation/results/`.
+This classifies each regex into **R**, **C-RASP**, **R∞** and **$R \circ G$** and saves the results to `src/regex_generation/results/`.
 
 Then sample `n` languages from each class:
 ```bash
