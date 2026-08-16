@@ -197,6 +197,6 @@ state-tracking-crasp/
 │   └── utils/
 │       ├── utils.py                    # Shared I/O utilities
 │       └── hparam_selection.py         # Select best architecture from sweep logs
-├── languages.csv                       # Language list for experiments (optional if generating your own)
+├── languages.csv                       # Language list for experiments. The repo contains two files main_language_suite.csv and secondary_language_suite.csv corresponding to the paper, but the language generation scripts will give you a languages.csv.
 └── requirements.txt
 ```
