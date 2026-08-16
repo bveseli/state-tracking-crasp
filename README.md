@@ -93,20 +93,20 @@ Each record has the form:
 Run a sweep over GPT-2 architectures (layers, heads, model dimension, learning rate) to find the best configuration per language. Training stops early once 100% in-distribution accuracy is reached:
 
 ```bash
-python src/training/state_prediction_ntp.py \
+python src/training/train_state_prediction_ntp.py \
   --task <language_name> \
-  --dataset_root datasets/
+  --dataset_root datasets/n10000-trainlen50
 ```
 
-> **Note:** `<language_name>` must match the `Name` column in `languages.csv` exactly. This same identifier is used as `--task` across all training scripts and corresponds to the subdirectory name created under `datasets/` during dataset generation.
+> **Note:** `<language_name>` must match the dataset folder name, the `--task` / `--tasks` argument, and the key in `best_hparams.json` (e.g. `lang_id_1`, `aa`).
 
-Sweep logs are written as `.txt` files to `results/hyperparam_search/{language_name}/`. Once the sweep is done, run `hparam_selection.py` to parse the logs and select the best architecture per language, saved as a JSON file used in the next step:
+Sweep logs are written as `.txt` files to `results/main_language_suite/hyperparameter-search/{language_name}/`. Once the sweep is done, run `hparam_selection.py` to parse the logs and select the best architecture per language, saved as a JSON file used in the next step:
 
 ```bash
 cd scripts && sbatch hparam_selection.sh
 # or directly:
 python src/utils/hparam_selection.py \
-  --results_dir results/hyperparam_search \
+  --results_dir results/main_language_suite/hyperparameter-search \
   --output best_hparams.json
 ```
 
@@ -121,11 +121,12 @@ Train the best architecture for each language across multiple random seeds to ge
 ```bash
 python src/training/run_multiple_seeds_ntp.py \
   --tasks <language_name> \
-  --dataset_root datasets/ \
-  --save_path results/
+  --dataset_root datasets/n10000-trainlen50 \
+  --hparams_path best_hparams.json \
+  --save_path results/main_language_suite/multi-seed-run
 ```
 
-Results are saved to `results/` and can then be used for evaluation and plotting.
+Results are saved to `results/main_language_suite/multi-seed-run` and can then be used for evaluation and plotting.
 
 ---
 
@@ -195,8 +196,8 @@ state-tracking-crasp/
 │   ├── data/
 │   │   └── create_words.py      # Sample words from regex and build datasets
 │   ├── training/
-│   │   ├── state_prediction_ntp.py      # Hyperparameter sweep
-│   │   └── run_multiple_seeds_ntp.py    # Multi-seed training
+│   │   ├── train_state_prediction_ntp.py  # Hyperparameter sweep
+│   │   └── run_multiple_seeds_ntp.py      # Multi-seed training
 │   └── utils/
 │       ├── utils.py                    # Shared I/O utilities
 │       └── hparam_selection.py         # Select best architecture from sweep logs

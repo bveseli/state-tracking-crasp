@@ -131,14 +131,6 @@ def check_R(semigroup):
     return True
 
 def check_R_infinity(semigroup):
-    # print("Syntactic monoid elements:", list(semigroup.elements()))
-    # dot = semigroup.graphviz_string()
-    # # replace print(dot) with:
-    # Source(dot).view()  # writes a temp file and opens the default viewer
-
-    # print("Elements of the semigroup:", list(semigroup.elements()))
-    # print("Idempotents of the semigroup:", list(semigroup.idempotents()))
-
     two_idempotents_in_the_same_R_class = False
     for el1, el2 in itertools.combinations(list(semigroup.idempotents()), 2):
         if semigroup.R_class_of_element(el1) == semigroup.R_class_of_element(el2):

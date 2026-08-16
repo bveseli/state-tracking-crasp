@@ -27,3 +27,8 @@ logs/
 .idea/
 .vscode/
 *.swp
+
+
+# old files
+languages.csv
+datasets/

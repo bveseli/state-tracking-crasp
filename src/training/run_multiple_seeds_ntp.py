@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import ast
 import json
 import os
 import random
@@ -9,7 +10,7 @@ from pathlib import Path
 import torch
 from transformers import GPT2Config, GPT2LMHeadModel, TrainerCallback, TrainingArguments, Trainer
 
-from state_prediction_ntp import (
+from train_state_prediction_ntp import (
     NoPEGPT2LMHeadModel,
     FormalLanguageStateTrackingDataset,
     build_tokenizer_from_metadata,
@@ -40,25 +41,24 @@ class SeedEarlyStopCallback(TrainerCallback):
 def parse_args():
     p = argparse.ArgumentParser(
         description=(
-            "Multi-seed runner like run_multiple_seeds_ntp.py, "
-            "but using Trainer + built-in GPT2 training logic from state_prediction_ntp.py."
+            "Multi-seed runner using Trainer + GPT2 training logic from "
+            "train_state_prediction_ntp.py."
         )
     )
     p.add_argument("--num_run", type=int, default=10, help="Number of successful runs to collect per task")
     p.add_argument("--nope", action="store_true")
-    p.add_argument("--regularize", type=float, default=0.0)
     p.add_argument("--tasks", nargs="+", required=True)
     p.add_argument(
         "--train_length_range",
         type=str,
-        default="(0,50)",
-        help="Train range as '(a,b)', e.g. '(0,50)'",
+        default="(0, 50)",
+        help="Python tuple, e.g. '(0, 50)'",
     )
     p.add_argument(
         "--test_length_range",
         type=str,
-        default="(51,100),(101,150),(151,200),(201,250),(251,300),(301,350),(351,400),(401,450),(451,500)",
-        help="Comma-separated test ranges, e.g. '(51,100),(101,150),(151,200)'",
+        default="[(51, 100), (101, 150), (151, 200), (201, 250), (251, 300), (301, 350), (351, 400), (401, 450), (451, 500)]",
+        help="Python list of tuples, e.g. '[(51, 100), (101, 150)]'",
     )
     p.add_argument(
         "--hparams_path",
@@ -69,10 +69,14 @@ def parse_args():
     p.add_argument(
         "--dataset_root",
         type=str,
-        default="../data",
+        default="datasets/main_train50",
         help="Base dataset root. Each task is read from {dataset_root}/{task}",
     )
-    p.add_argument("--save_path", type=str, default="../results/multiseed_run")
+    p.add_argument(
+        "--save_path",
+        type=str,
+        default="results/main_language_suite/multi-seed-run",
+    )
     return p.parse_args()
 
 
@@ -122,10 +126,10 @@ if __name__ == "__main__":
     with open(hparams_path, "r") as f:
         hparam_map = json.load(f)
 
-    task_arch = {task: hparam_map.get(f"{task}") for task in args.tasks}
+    task_arch = {task: hparam_map.get(task) for task in args.tasks}
 
-    train_length_range=[(int(min_len), int(max_len)) for min_len, max_len in re.findall(r'\((min|\d+),\s*(\d+)\)', args.train_length_range)]
-    test_length_ranges=[train_length_range]+ [(int(min_len), int(max_len)) for min_len, max_len in re.findall(r'\((min|\d+),\s*(\d+)\)', args.test_length_range)]
+    train_length_range = ast.literal_eval(args.train_length_range)
+    test_length_ranges = [train_length_range] + ast.literal_eval(args.test_length_range)
     max_test_length = test_length_ranges[-1][1]
 
     batch_size = 64
@@ -133,16 +137,13 @@ if __name__ == "__main__":
 
     save_path = args.save_path
     os.makedirs(save_path, exist_ok=True)
-    if args.nope:
-        suffix = "-nope"
-    elif args.regularize != 0:
-        suffix = f"-reg{args.regularize}"
-    else:
-        suffix = ""
+    suffix = "-nope" if args.nope else ""
 
     print("Start training...")
     for task in args.tasks:
         arch = task_arch.get(task)
+        if isinstance(arch, dict):
+            arch = arch.get("config")
         if arch is None:
             print(f"Skipping task {task}: no arch in hparams map.")
             continue
@@ -154,7 +155,7 @@ if __name__ == "__main__":
         print("\n\ntask: ", task, "\t", arch, "\n", file=summary_f)
         print(f"task: {task}  arch: {arch}")
 
-        dataset_path = f"{args.dataset_root}/{task}"
+        dataset_path = os.path.join(args.dataset_root, task)
         print("Dataset path:", dataset_path)
 
         tokenizer = build_tokenizer_from_metadata(dataset_path)
@@ -207,8 +208,6 @@ if __name__ == "__main__":
                     torch.cuda.manual_seed_all(seed)
                 if args.nope:
                     model = NoPEGPT2LMHeadModel(cfg)
-                elif args.regularize != 0:
-                    model = RegGPT2LMHeadModel(cfg, args.regularize)
                 else:
                     model = GPT2LMHeadModel(cfg)
 

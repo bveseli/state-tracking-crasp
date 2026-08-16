@@ -167,6 +167,16 @@ def check_R_infinity(semigroup) -> bool:
     for e1, e2 in itertools.combinations(idempotents, 2):
         if semigroup.R_class_of_element(e1) == semigroup.R_class_of_element(e2):
             return False
+    return semigroup.is_Ap()
+
+
+
+def check_R_G(semigroup) -> bool:
+    """True iff no two distinct idempotents share an R-class."""
+    idempotents = list(semigroup.idempotents())
+    for e1, e2 in itertools.combinations(idempotents, 2):
+        if semigroup.R_class_of_element(e1) == semigroup.R_class_of_element(e2):
+            return False
     return True
 
 

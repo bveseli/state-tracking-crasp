@@ -241,10 +241,52 @@ def decide_CRASP_membership_from_regex(regex_str):
     my_dfa = DFA.from_nfa(nfa, minify=True)
     return decide_CRASP_membership(my_dfa)
 
+
+def syntactic_monoid_from_dfa(my_dfa):
+    """Build the syntactic monoid via classify_att's pysemigroup conversion."""
+    from classify_att import complete_dfa, to_pysemi_automaton
+    from pysemigroup import TransitionSemiGroup
+
+    def _s(x):
+        return str(x)
+
+    arcs = {
+        _s(src): {_s(sym): _s(dest) for sym, dest in trans.items()}
+        for src, trans in my_dfa.transitions.items()
+    }
+    initial, finals, arcs, alphabet, states = complete_dfa(
+        _s(my_dfa.initial_state),
+        {_s(s) for s in my_dfa.final_states},
+        arcs,
+    )
+    return TransitionSemiGroup(to_pysemi_automaton(initial, finals, arcs, alphabet, states))
+
+
+def decide_membership(my_dfa):
+    """
+    Decide R, C-RASP, R_infinity, and R_G.
+    R / R_infinity / R_G use classify_att.check_*; C-RASP is local.
+    """
+    from classify_att import check_R, check_R_infinity, check_R_G
+
+    semigroup = syntactic_monoid_from_dfa(my_dfa)
+    return {
+        "R": check_R(semigroup),
+        "C-RASP": decide_CRASP_membership(my_dfa),
+        "R_infinity": check_R_infinity(semigroup),
+        "R_G": check_R_G(semigroup),
+    }
+
+
+def decide_membership_from_regex(regex_str):
+    nfa = NFA.from_regex(regex_str.replace('+', '|'))
+    my_dfa = DFA.from_nfa(nfa, minify=True)
+    return decide_membership(my_dfa)
+
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Decide C-RASP membership for a regular language.")
+    parser = argparse.ArgumentParser(description="Decide R, C-RASP, R_infinity, and R_G membership for a regular language.")
     parser.add_argument("--regex", type=str, nargs="+", required=True, help="One or more regular expressions (use + for union, e.g. '(cab+c)*')")
     parser.add_argument("--draw", action="store_true", help="Generate and open a DFA diagram")
     args = parser.parse_args()
@@ -259,5 +301,8 @@ if __name__ == "__main__":
             G = automata_to_graph(my_dfa)
             plt.show()
 
-        membership = decide_CRASP_membership(my_dfa)
-        print(f"C-RASP membership: {membership}")
+        membership = decide_membership(my_dfa)
+        print(f"R membership: {membership['R']}")
+        print(f"C-RASP membership: {membership['C-RASP']}")
+        print(f"R_infinity membership: {membership['R_infinity']}")
+        print(f"R_G membership: {membership['R_G']}")

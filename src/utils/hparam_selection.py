@@ -61,30 +61,51 @@ def sorted_bins(metrics: dict):
     return [key for _, key in bins]
 
 
-def select_best(runs: list):
+def shortest_bin(metrics: dict):
+    """Return the in-distribution bin (smallest upper bound), e.g. eval_len0-50_acc."""
+    bins = sorted_bins(metrics)
+    return bins[-1] if bins else None
+
+
+def select_best(runs: list, short_bin: str | None = None):
     """
     Select the best run from a list of (arch_str, lr, metrics) tuples.
 
     Strategy:
-      - Starting from the highest length bin, find all runs with acc == 1.0.
-      - If multiple, pick the smallest architecture (layers → heads → d_model).
-      - If none reach 1.0 on the highest bin, move to the next lower bin and repeat.
-      - Returns None if no run achieves 1.0 on any bin.
+      - Keep only runs with acc == 1.0 on the shortest (in-distribution) bin.
+      - Then cascade from the longest bin to the shortest: at each bin, keep
+        only the runs with the highest accuracy. Ties continue to the next
+        shorter bin.
+      - If still tied after every bin, pick the smallest architecture
+        (layers → heads → d_model).
+      - Returns the arch key, or None if no run achieves 1.0 on the shortest bin.
     """
     if not runs:
         return None
+    short_bin = short_bin or shortest_bin(runs[0][2])
+    if not short_bin:
+        return None
 
-    for bin_key in sorted_bins(runs[0][2]):
+    candidates = [
+        (arch_str, lr, metrics)
+        for arch_str, lr, metrics in runs
+        if metrics.get(short_bin, 0.0) == 1.0
+    ]
+    if not candidates:
+        return None
+
+    for bin_key in sorted_bins(candidates[0][2]):
+        if len(candidates) == 1:
+            break
+        best_acc = max(metrics.get(bin_key, 0.0) for _, _, metrics in candidates)
         candidates = [
             (arch_str, lr, metrics)
-            for arch_str, lr, metrics in runs
-            if metrics.get(bin_key, 0.0) == 1.0
+            for arch_str, lr, metrics in candidates
+            if metrics.get(bin_key, 0.0) == best_acc
         ]
-        if candidates:
-            best = min(candidates, key=lambda x: parse_arch(x[0]) or (999, 999, 999))
-            return make_arch_key(best[0], best[1])
 
-    return None
+    best = min(candidates, key=lambda x: parse_arch(x[0]) or (999, 999, 999))
+    return make_arch_key(best[0], best[1])
 
 
 def collect_runs(task_dir: Path, nope: bool = False):
@@ -148,12 +169,13 @@ def main():
             print(f"[{task_name}] No runs found.")
             continue
 
-        best = select_best(runs)
+        short_bin = shortest_bin(runs[0][2])
+        best = select_best(runs, short_bin=short_bin)
         if best:
             best_hparams[task_name] = best
             print(f"[{task_name}] Best: {best}")
         else:
-            print(f"[{task_name}] No run achieved 1.0 accuracy on any bin.")
+            print(f"[{task_name}] No run achieved 1.0 accuracy on {short_bin}.")
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
