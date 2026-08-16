@@ -8,7 +8,7 @@ Each formal language is defined by a regular expression and realized as a DFA. T
 
 The codebase supports the full experimental pipeline:
 
-1. **Generate languages** — sample random regular expressions and classify them (R, C-RASP, R∞), or use the provided `main_language_suite.csv`/`secondary_language_suite.csv`.
+1. **Generate languages** — sample random regular expressions and classify them (R, C-RASP, R∞, $R \circ G$), or use the provided `main_language_suite.csv`/`secondary_language_suite.csv`.
 2. **Build datasets** — sample accepted words at chosen length bins and record DFA state traces for each language.
 3. **Hyperparameter search** — sweep over model architectures and select the best model per language.
 4. **Multi-seed training** — train the chosen architecture with multiple random initializations for robust evaluation.
