@@ -169,10 +169,6 @@ Key dependencies:
 ```
 state-tracking-crasp/
 ├── datasets/                        # Generated word datasets (created at runtime)
-│   ├── n10000-trainlen50/      # 10k training samples, train length range up to 50
-│   ├── n10000-trainlen200/     # 10k training samples, train length range up to 200
-│   ├── n100000-trainlen50/     # 100k training samples, train length range up to 50
-│   └── n100000-trainlen200/    # 100k training samples, train length range up to 200
 ├── scripts/                     # SLURM batch scripts
 │   ├── generate_languages.sh
 │   ├── sample_languages.sh
