@@ -130,16 +130,13 @@ def check_R(semigroup):
             return False
     return True
 
-def check_R_infinity(semigroup):
-    two_idempotents_in_the_same_R_class = False
-    for el1, el2 in itertools.combinations(list(semigroup.idempotents()), 2):
-        if semigroup.R_class_of_element(el1) == semigroup.R_class_of_element(el2):
-            two_idempotents_in_the_same_R_class = True
-            # print(f"Two idempotents in the same R-class: {el1}, {el2}")
-            break
-    # check aperiodic
-    is_aperiodic = semigroup.is_Ap()
-    return two_idempotents_in_the_same_R_class and is_aperiodic
+def check_R_infinity(semigroup) -> bool:
+    """True iff no two distinct idempotents share an R-class."""
+    idempotents = list(semigroup.idempotents())
+    for e1, e2 in itertools.combinations(idempotents, 2):
+        if semigroup.R_class_of_element(e1) == semigroup.R_class_of_element(e2):
+            return False
+    return semigroup.is_Ap()
 
 if __name__ == "__main__":
     alphabet = {'a', 'b', 'c'}
